@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <list>
+#include <unistd.h>
 
 using namespace std;
 
@@ -18,10 +19,11 @@ void lector();
 	H Threshold
 */
 int M = 0, N = 0, H = 0;
+int cuantosLectores = 0;
 /*Tabla Hash compuesta de un vector de listas.*/
-vector<vector<char*>> tabla;
+vector<vector<char*> > tabla;
 /*Semaforos*/
-
+pthread_mutex_t acceso = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char* argv[]){
 	if(argc < 5){
@@ -50,6 +52,20 @@ void escritor(){
 }
 
 void lector(){
-
+	leer:
+	if(pthread_mutex_trylock(&acceso)){
+		cuantosLectores++;
+		pthread_mutex_unlock(&acceso); //No es necesario que bloquee al leer
+		//Leer();
+		cuantosLectores--
+;	}
+	else{
+		sleep(100); //que duerma unos milisegundos
+		goto leer;
+	}
 
 }
+
+/*
+Tengo la idea de implementar lector-escritor con solo 1 mutex, 1 variable de condicion y un contador
+*/
