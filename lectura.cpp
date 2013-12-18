@@ -15,6 +15,7 @@ char* nombreArchivo = new(char[30]);
 void* function(void* dato){
 	int indice = *((int*)dato);
 	int dondeComenzar = indice * baseParaMultiplicar;
+	int	tope = (indice+1)*baseParaMultiplicar;
 	FILE* hFile = fopen(nombreArchivo,"r");
 	fseek(hFile, dondeComenzar, SEEK_SET);
 	int contador = 0;
@@ -22,6 +23,8 @@ void* function(void* dato){
 	while(actual!=EOF){
 		actual=fgetc(hFile);
 		contador++;
+		if((contador==tope) || (contador == tamanoArchivo))
+			break;
 	}
 	printf("Soy la hebra: %d.\nHe leido: %d de %d bytes.Comence a leer desde el byte: %d\n",indice,contador,tamanoArchivo,dondeComenzar);
 }
